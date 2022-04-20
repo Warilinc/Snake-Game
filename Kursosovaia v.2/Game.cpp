@@ -88,7 +88,7 @@ void CGame::draw_field() {
         }
     }
     scr.pos(0, height);
-    _cprintf("Length: ****  Rating: ****.**** (****.****)  Time: ****.**");
+    _cprintf("Length: ****  Rating: ******.**** (******.****)  Time: ****.**");
 }
 
 /// <summary>
@@ -111,10 +111,10 @@ void CGame::print_stat() {
     scr.pos(8, height);
     _cprintf("%04u", snake.size()); //длина змейки
     scr.pos(22, height);
-    _cprintf("%09.4f", rating); //рейтинг текущей игры
-    scr.pos(33, height);
-    _cprintf("%09.4f", rating_max); //максимальный рейтинг
-    scr.pos(51, height);
+    _cprintf("%011.4f", rating); //рейтинг текущей игры
+    scr.pos(35, height);
+    _cprintf("%011.4f", rating_max); //максимальный рейтинг
+    scr.pos(55, height);
     _cprintf("%07.2f", duration_game); //время игры
 }
 
@@ -157,7 +157,7 @@ void CGame::Settings() {
     scr.pos_str(setwidth / 2, 1, "Settings:", 7);
     scr.pos_str(setwidth / 2, 9, "Colors:", 7);
     scr.pos_str(setwidth / 2, 19, "Difficulty:", 7);
-    scr.pos_str(setwidth / 2, 27, "Press [Enter] to play", 7);
+    scr.pos_str(setwidth / 2, 29, "Press [Enter] to play", 7);
 
     Command cmd = Command::CMD_NOCOMMAND;
     int delta = 0;
@@ -206,6 +206,14 @@ void CGame::Settings() {
             _cprintf(" > Food on map: %u < ", FoodOnMap);
         else
             _cprintf("   Food on map: %u   ", FoodOnMap);
+
+        scr.pos(setwidth / 2, 26);
+        if (delta == 7)
+            
+            _cprintf(" > Borderless mode: %s < ", (borderless ? "On" : "Off"));
+        else
+            _cprintf("   Borderless mode: %s   ", (borderless ? "On" : "Off"));
+
         cmd = get_command();
 
         // обработка команд
@@ -218,6 +226,7 @@ void CGame::Settings() {
             if (delta == 4 && bdtxtColor < 15) bdtxtColor += 1;
             if (delta == 5 && SegmentsGet > 1) SegmentsGet -= 1;
             if (delta == 6 && FoodOnMap > 1) FoodOnMap -= 1;
+            if (delta == 7) borderless = !borderless;
             break;
         case Command::CMD_RIGHT:
             if (delta == 0) height += 1;
@@ -227,13 +236,14 @@ void CGame::Settings() {
             if (delta == 4 && bdtxtColor > 1) bdtxtColor -= 1;
             if (delta == 5 && SegmentsGet < 5) SegmentsGet += 1;
             if (delta == 6 && FoodOnMap < 5) FoodOnMap += 1;
+            if (delta == 7) borderless = !borderless;
             break;
         case Command::CMD_UP:
             if (delta > 0)
                 delta -= 1;
             break;
         case Command::CMD_DOWN:
-            if (delta < 6 )
+            if (delta < 7 )
                 delta += 1;
             break;
         default:
@@ -258,7 +268,7 @@ void CGame::bye() {
 /// основной цикл игры
 /// </summary>
 void CGame::game_loop() { 
-
+    scr.cursor_visibility(false); //сделать курсор невидимым
     //сбросить все на начальные значения и нарисовать поле
     draw_field();
     snake.reset(SCoord(width / 2, height / 2));
@@ -312,12 +322,24 @@ void CGame::game_loop() {
         hd += delta;
 
         //проверяем не врезалась ли змейка в предмет
-        if (hd.x == 0 || hd.x == width - 1 || hd.y == 0 || hd.y == height - 1 || snake.into(hd))
+        if ((!borderless && (hd.x == 0 || hd.x == width - 1 || hd.y == 0 || hd.y == height - 1)) || snake.into(hd))
             stt = State::ST_DIED;
         
         if (stt == State::ST_OK) {     
             //если змейка жива передвинуть змейку
-            snake.move(delta, scr);   
+            if (!borderless) {
+                snake.move(delta, scr);  
+            }
+            else {
+                //сдвиг змейки для режима без границ
+                SCoord deltaBorder(0, 0);
+                if (hd.x == 0) deltaBorder.x += width - 2;
+                if (hd.x == width - 1) deltaBorder.x -= width-2;
+                if (hd.y == 0) deltaBorder.y += height - 2;
+                if (hd.y == height - 1) deltaBorder.y -= height - 2;
+                snake.move(delta+deltaBorder, scr);
+            }
+             
             //проверить не попала ли змейка в одну клетку с едой
             for (int i = 0; i < FoodOnMap; i++) {
                 SCoord &food = foodVect[i];

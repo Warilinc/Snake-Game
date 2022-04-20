@@ -27,6 +27,7 @@ private:
     int latency;                //задержка между действиями
     int SegmentsGet=3;          //колличество получаемых змейкой сегментов
     int FoodOnMap=1;            //колличество еды на поле
+    bool borderless = false;    //режим без границ включен/выключен
 
     ConsoleScreen scr;                  //консоль
     CSnake snake;                       //змейка
