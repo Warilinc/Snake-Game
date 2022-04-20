@@ -318,28 +318,29 @@ void CGame::game_loop() {
         };
 
         //перерасчет координат головы
-        SCoord hd = snake.head();       
-        hd += delta;
-
+        SCoord hd = snake.head(); 
+        if (borderless) {
+            hd += delta;
+            SCoord deltaBorder(0, 0);
+            if (hd.x == 0) deltaBorder.x += width - 2;
+            if (hd.x == width - 1) deltaBorder.x -= width - 2;
+            if (hd.y == 0) deltaBorder.y += height - 2;
+            if (hd.y == height - 1) deltaBorder.y -= height - 2;
+            hd += deltaBorder;
+            delta += deltaBorder;            
+        }
+        else {
+            hd += delta;
+        }
+        
         //проверяем не врезалась ли змейка в предмет
         if ((!borderless && (hd.x == 0 || hd.x == width - 1 || hd.y == 0 || hd.y == height - 1)) || snake.into(hd))
             stt = State::ST_DIED;
         
         if (stt == State::ST_OK) {     
             //если змейка жива передвинуть змейку
-            if (!borderless) {
-                snake.move(delta, scr);  
-            }
-            else {
-                //сдвиг змейки для режима без границ
-                SCoord deltaBorder(0, 0);
-                if (hd.x == 0) deltaBorder.x += width - 2;
-                if (hd.x == width - 1) deltaBorder.x -= width-2;
-                if (hd.y == 0) deltaBorder.y += height - 2;
-                if (hd.y == height - 1) deltaBorder.y -= height - 2;
-                snake.move(delta+deltaBorder, scr);
-            }
-             
+             snake.move(delta, scr);  
+
             //проверить не попала ли змейка в одну клетку с едой
             for (int i = 0; i < FoodOnMap; i++) {
                 SCoord &food = foodVect[i];
