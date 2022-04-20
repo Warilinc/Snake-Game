@@ -291,12 +291,13 @@ void CGame::game_loop() {
 
     do {
         // если в буфере клавиатуры есть информация, то принять команду
-        cmd = Command::CMD_NOCOMMAND;
+        //cmd = Command::CMD_NOCOMMAND;
         while (_kbhit()) {
             precmd = get_command();
             cmd = precmd != Command::CMD_NOCOMMAND ? precmd : cmd;
         }
-            
+        //if (_kbhit())
+        //    cmd = get_command();
             
 
         // обработка команд
