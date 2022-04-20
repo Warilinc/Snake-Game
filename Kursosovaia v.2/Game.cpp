@@ -317,7 +317,7 @@ void CGame::game_loop() {
             break;
         };
 
-        //перерасчет координат головы
+        //перерасчет координат головы и смещения(только в режиме без границ) 
         SCoord hd = snake.head(); 
         if (borderless) {
             hd += delta;
