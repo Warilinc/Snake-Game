@@ -7,12 +7,13 @@ const char SNAKE_HEAD = '%'; //символ отрисовки головы змейки
 /// сброс змейки до начального состояния
 /// </summary>
 /// <param name="start_pos">стартовая позиция</param>
-void CSnake::reset(SCoord start_pos) {
+/// <param name="tailDelta">смещение хвоста</param>
+void CSnake::reset(SCoord start_pos, SCoord tailDelta) {
     tail.clear();               // очистить массив от старых значений
     tail.reserve(1000);         // зарезервировть память
     tail.push_back(start_pos);  // добавить координаты головы
     tail.push_back(start_pos);  // добавить координаты хвоста
-    tail[0].x++;                // координата x хвоста - на 1 правее
+    tail[0]+=tailDelta;         // координата хвоста смещена на дельту
 }
 
 /// <summary>

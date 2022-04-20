@@ -18,7 +18,7 @@ public:
 
 
 private:
-    enum class Command { CMD_NOCOMMAND = 0, CMD_EXIT, CMD_LEFT, CMD_RIGHT, CMD_UP, CMD_DOWN, CMD_PLAY}; //команды игры
+    enum class Command { CMD_NOCOMMAND = 0, CMD_EXIT, CMD_LEFT, CMD_RIGHT, CMD_UP, CMD_DOWN, CMD_PLAY, CMD_2LEFT, CMD_2RIGHT, CMD_2UP, CMD_2DOWN,}; //команды игры
     enum class State { ST_OK, ST_EXIT, ST_DIED };  //состояния игры
 
     typedef std::pair<int, Command> CmdPair;
@@ -28,10 +28,11 @@ private:
     int SegmentsGet=3;          //колличество получаемых змейкой сегментов
     int FoodOnMap=1;            //колличество еды на поле
     bool borderless = false;    //режим без границ включен/выключен
+    bool twoplayers = false;    //режим для двух игроков
 
     ConsoleScreen scr;                  //консоль
-    CSnake snake;                       //змейка
-    CmdPair cmd_table[6];               //таблица комманд
+    CSnake snake, snake2;               //змейка
+    CmdPair cmd_table[10];              //таблица комманд
     double duration_game;               //длительность игры
     double rating, rating_max=0.0;      //рейтинг и максимальный рейтинг
     WORD bdtxtColor = 7;                //цвет границ игрового поля и текста

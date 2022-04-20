@@ -32,6 +32,10 @@ CGame::CGame(ConsoleScreen& _scr, int _width, int _height, int _latency) :
     cmd_table[3] = CmdPair('H', Command::CMD_UP);    // стрелка вверх
     cmd_table[4] = CmdPair('P', Command::CMD_DOWN);  // стрелка вниз
     cmd_table[5] = CmdPair(13, Command::CMD_PLAY);  // enter
+    cmd_table[6] = CmdPair('a', Command::CMD_2LEFT);  // a
+    cmd_table[7] = CmdPair('d', Command::CMD_2RIGHT); // d
+    cmd_table[8] = CmdPair('w', Command::CMD_2UP);    // w
+    cmd_table[9] = CmdPair('s', Command::CMD_2DOWN);  // s
 }
 
 /// <summary>
@@ -46,8 +50,8 @@ CGame::Command CGame::get_command() {
         ch = _getch();
     }
 
-    for (int i = 0; i < 6; i++) {
-        if (cmd_table[i].first == ch) {
+    for (int i = 0; i < 10; i++) {
+        if (cmd_table[i].first == ch || cmd_table[i].first == tolower(ch)) {
             return cmd_table[i].second;
         }
     }
@@ -271,20 +275,29 @@ void CGame::game_loop() {
     scr.cursor_visibility(false); //сделать курсор невидимым
     //сбросить все на начальные значения и нарисовать поле
     draw_field();
-    snake.reset(SCoord(width / 2, height / 2));
+    if (!twoplayers) {
+        snake.reset(SCoord(width / 2, height / 2));
+    }
+    else {
+        snake.reset(SCoord(width / 2 - 4, height / 2));
+        snake2.reset(SCoord(width / 2 + 4, height / 2));
+    }
+    
     duration_game = 0;
     rating = 0.0;
     Command precmd = Command::CMD_NOCOMMAND;
     Command cmd = Command::CMD_NOCOMMAND;
     State stt = State::ST_OK;
-    SCoord delta(-1, 0);  
+    SCoord delta(-1, 0);
 
     //нарисовать начальную еду и змейку
     for (int i = 0; i < FoodOnMap; i++) {
         foodVect[i] = make_food();          
         scr.pos(foodVect[i].x, foodVect[i].y, FOOD, foodColor);             
     }
-    snake.print(scr);                    
+    snake.print(scr);
+    if (twoplayers) snake2.print(scr);
+
     print_stat();                       
     clock_t time1, time2, duration;
     time1 = clock();
@@ -294,10 +307,8 @@ void CGame::game_loop() {
         cmd = Command::CMD_NOCOMMAND;
         while (_kbhit()) {
             precmd = get_command();
-            cmd = precmd != Command::CMD_NOCOMMAND ? precmd : cmd;
+            cmd = precmd != Command::CMD_NOCOMMAND && static_cast<unsigned int>(precmd) < 6 ? precmd  : cmd;
         }
-            
-            
 
         // обработка команд
         switch (cmd) {

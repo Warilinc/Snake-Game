@@ -9,7 +9,7 @@ typedef std::vector<SCoord> CoordVector;
 /// </summary>
 class CSnake {
 public:
-    void reset(SCoord start_pos); //сбросить змейку до начального состояния
+    void reset(SCoord start_pos, SCoord tailDelta = SCoord(1, 0)); //сбросить змейку до начального состояния
     void print(ConsoleScreen& scr); //напечатать змейку в консоли
     void move(const SCoord& delta, ConsoleScreen& scr); //сдвинуть змейку на координаты delta
     void grow(const SCoord& pos, int grow); //увериличить змейку на grow
