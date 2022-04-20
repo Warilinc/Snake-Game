@@ -274,6 +274,7 @@ void CGame::game_loop() {
     snake.reset(SCoord(width / 2, height / 2));
     duration_game = 0;
     rating = 0.0;
+    Command precmd = Command::CMD_NOCOMMAND;
     Command cmd = Command::CMD_NOCOMMAND;
     State stt = State::ST_OK;
     SCoord delta(-1, 0);  
@@ -290,8 +291,13 @@ void CGame::game_loop() {
 
     do {
         // если в буфере клавиатуры есть информация, то принять команду
-        if (_kbhit())
-            cmd = get_command();      
+        cmd = Command::CMD_NOCOMMAND;
+        while (_kbhit()) {
+            precmd = get_command();
+            cmd = precmd != Command::CMD_NOCOMMAND ? precmd : cmd;
+        }
+            
+            
 
         // обработка команд
         switch (cmd) {
