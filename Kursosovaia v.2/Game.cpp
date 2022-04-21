@@ -128,7 +128,7 @@ void CGame::print_stat() {
     scr.pos(35, height);
     _cprintf("%011.4f", rating_max); //максимальный рейтинг
     scr.pos(55, height);
-    _cprintf("%07.2f", duration_game); //время игры
+    _cprintf("%07.2f", duration_game); //время последнего сьедения фрукта
     if (twoplayers) {
         scr.pos(8, height + 1);
         _cprintf("%04u", snake2.size()); //длина змейки
@@ -137,7 +137,7 @@ void CGame::print_stat() {
         scr.pos(35, height + 1);
         _cprintf("%011.4f", rating_max2); //максимальный рейтинг
         scr.pos(55, height + 1);
-        _cprintf("%07.2f", duration_game2); //время игры
+        _cprintf("%07.2f", duration_game2); //время последнего сьедения фрукта
 
         //победы игроков
         scr.pos(83, height);
@@ -152,8 +152,8 @@ void CGame::print_stat() {
 /// </summary>
 /// <returns>да/нет</returns>
 bool CGame::once_more() {
-    scr.pos_str(width / 2 - 16, height - 3, "Are you want to play once more?", txtColor);
-    scr.pos_str(width / 2 - 6, height - 2, "[S]ettings", txtColor);
+    scr.pos_str(width / 2 - 15, height - 3, "Are you want to play once more?", txtColor);
+    scr.pos_str(width / 2 - 5, height - 2, "[S]ettings", txtColor);
     
     int ch = _getch();
     clearkeys();
@@ -552,8 +552,7 @@ void CGame::game_loop() {
                     time1s2 = time2s2;
                     print_stat();
 
-                }
-                
+                }                
             }
             Sleep(latency);             // задержка перед следующим изменением позиции
         }

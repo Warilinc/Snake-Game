@@ -27,8 +27,8 @@ private:
     int latency;                //задержка между действиями
     int SegmentsGet=3;          //колличество получаемых змейкой сегментов
     int FoodOnMap=1;            //колличество еды на поле
-    bool borderless = true;    //режим без границ включен/выключен
-    bool twoplayers = true;    //режим для двух игроков
+    bool borderless = false;    //режим без границ включен/выключен
+    bool twoplayers = false;    //режим для двух игроков
     int winsPlayer1 = 0;        //победы 1 игрока
     int winsPlayer2 = 0;        //победы 2 игрока
     ConsoleScreen scr;                  //консоль
