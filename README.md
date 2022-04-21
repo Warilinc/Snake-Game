@@ -1,10 +1,10 @@
 # Snake-Game
-it is snake game?
+**It is snake game?
 
-yes it is
+*- Yeah, it is.
 
-why it here?
+**Why it here?
 
-I dont know, but you can freely use my code if you want.
+*-I don't know, but you can freely use my code if you want.
 
 Copyright Warilinc.
